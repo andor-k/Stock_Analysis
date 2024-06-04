@@ -3,6 +3,7 @@
 #include "Programs.h"
 
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -18,11 +19,7 @@ HashTable::HashTable()
 
 int HashTable::hash(std::string key)
 {
-    int hash = 0;
-    for (char c : key)
-    {
-        hash += c;
-    }
+    int hash = std::accumulate(key.begin(), key.end(), 0);
     int index = hash % TABLESIZE;
     return index;
 }
@@ -117,7 +114,7 @@ void HashTable::search(const Stock *stock)
         std::cout << "\nStock not found!" << std::endl;
         return;
     }
-    for (Stock s : table[index])
+    for (const Stock &s : table[index])
     {
         if (s.acronym == stock->acronym)
         {
@@ -128,7 +125,7 @@ void HashTable::search(const Stock *stock)
             }
             else
             {
-                StockData &latestData = s.history.back();
+                const StockData &latestData = s.history.back();
                 std::cout << "\nLatest data for " << s.name << " (" << s.acronym << "):\n";
                 std::cout << "--------------------------------" << std::endl;
                 std::cout << "Date: " << latestData.date << ", Open: " << latestData.open << ", High: " << latestData.high
